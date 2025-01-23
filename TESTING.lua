@@ -304,7 +304,7 @@ SettingsTab:CreateToggle({
         Settings["Auto Combine"]["Enabled"] = Value
         AutoCombineRunning = Value
         if Value then
-            task.spawn(function()
+            task.defer(function()
                 while AutoCombineRunning do
                     -- Wykonaj logikę Auto Combine
                     AutoCombineCheck()
@@ -328,7 +328,7 @@ SettingsTab:CreateToggle({
         Settings["Auto Deleters"]["Enabled"] = Value
         AutoDeletersRunning = Value
         if Value then
-            task.spawn(function()
+            task.defer(function()
                 while AutoDeletersRunning do
                     -- Usuwamy niechciane zwierzaki
                     DeleteOtherUnwantedPets()

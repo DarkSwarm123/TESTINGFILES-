@@ -131,8 +131,10 @@ end
 
 -- Funkcja usuwająca niechciane zwierzaki
 local function DeleteOtherUnwantedPets()
+if not AutoDeletersRunning then return end -- Jeśli flaga wyłączona, przerwij działanie funkcji
     local Stats = workspace["__REMOTES"]["Core"]["Get Stats"]:InvokeServer()
     for _, Pet in ipairs(Stats.Save.Pets) do
+    if not AutoDeletersRunning then break end -- Sprawdzenie flagi w każdej iteracji
         if CheckDeleters(Pet.n) then
             -- Usuwanie zwierzaka w tle z task.defer
             task.defer(function()
@@ -205,11 +207,13 @@ end
 
 -- Funkcja automatycznego łączenia zwierzaków
 local function AutoCombineCheck()
+if not AutoCombineRunning then return end -- Jeśli flaga wyłączona, przerwij działanie funkcji
     local Stats = workspace["__REMOTES"]["Core"]["Get Stats"]:InvokeServer()
     local GoldTable, RainbowTable, DarkMatterTable = {}, {}, {}
 
     -- Tworzenie tabel z odpowiednimi zwierzakami
     for _, Pet in ipairs(Stats.Save.Pets) do
+    if not AutoCombineRunning then break end -- Sprawdzenie flagi w każdej iteracji
         if Settings["Auto Combine"]["Gold"] and not Pet.g and not Pet.r and not Pet.dm then
             GoldTable[tostring(Pet.n)] = (GoldTable[tostring(Pet.n)] or 0) + 1
         elseif Settings["Auto Combine"]["Rainbow"] and Pet.g and not Pet.r and not Pet.dm then
@@ -301,19 +305,12 @@ SettingsTab:CreateToggle({
     CurrentValue = Settings["Auto Combine"]["Enabled"],
     Flag = "AutoCombineToggle",
     Callback = function(Value)
-        Settings["Auto Combine"]["Enabled"] = Value
-        AutoCombineRunning = Value
+        AutoCombineRunning = Value -- Aktualizacja flagi
         if Value then
-            task.defer(function()
+            task.spawn(function()
                 while AutoCombineRunning do
-                    -- Wykonaj logikę Auto Combine
-                    AutoCombineCheck()
-                    
-                    -- Oczekiwanie przed kolejnym sprawdzeniem (co 2 sekundy)
-                    task.wait(2)
-                    
-                    -- Przerwanie pętli, jeśli flaga została wyłączona
-                    if not AutoCombineRunning then break end
+                    AutoCombineCheck() -- Główna funkcja Auto Combine
+                    task.wait(2) -- Czas oczekiwania między iteracjami
                 end
             end)
         end
@@ -325,19 +322,12 @@ SettingsTab:CreateToggle({
     CurrentValue = Settings["Auto Deleters"]["Enabled"],
     Flag = "AutoDeleterToggle",
     Callback = function(Value)
-        Settings["Auto Deleters"]["Enabled"] = Value
-        AutoDeletersRunning = Value
+        AutoDeletersRunning = Value -- Aktualizacja flagi
         if Value then
-            task.defer(function()
+            task.spawn(function()
                 while AutoDeletersRunning do
-                    -- Usuwamy niechciane zwierzaki
-                    DeleteOtherUnwantedPets()
-                    
-                    -- Oczekiwanie na odświeżenie przed kolejnym sprawdzeniem (co 2 sekundy)
-                    task.wait(2)
-                    
-                    -- Przerwanie pętli, jeśli flaga została wyłączona
-                    if not AutoDeletersRunning then break end
+                    DeleteOtherUnwantedPets() -- Główna funkcja Auto Delete
+                    task.wait(2) -- Czas oczekiwania między iteracjami
                 end
             end)
         end

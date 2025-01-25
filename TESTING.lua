@@ -188,7 +188,7 @@ local function AutoEggMain()
         if maxPets - currentPets < requiredFreeSlots then
             warn("Ekwipunek pełny, czekam na zwolnienie miejsca...")
             repeat
-                RunService.Heartbeat:Wait()
+        
                 stats = workspace["__REMOTES"]["Core"]["Get Stats"]:InvokeServer()
                 currentPets = #stats.Save.Pets
             until maxPets - currentPets >= requiredFreeSlots
@@ -201,7 +201,7 @@ local function AutoEggMain()
             warn("Kupowanie jajek zostało przerwane.")
             break
         end
-        RunService.Heartbeat:Wait()
+        
     end
 end
 

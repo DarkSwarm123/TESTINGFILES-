@@ -188,7 +188,7 @@ local function AutoEggMain()
         if maxPets - currentPets < requiredFreeSlots then
             warn("Ekwipunek pełny, czekam na zwolnienie miejsca...")
             repeat
-        task.wait(0.01)
+        task.wait()
                 stats = workspace["__REMOTES"]["Core"]["Get Stats"]:InvokeServer()
                 currentPets = #stats.Save.Pets
             until maxPets - currentPets >= requiredFreeSlots
@@ -201,7 +201,7 @@ local function AutoEggMain()
             warn("Kupowanie jajek zostało przerwane.")
             break
         end
-        task.wait(0.01)
+        task.wait()
     end
 end
 

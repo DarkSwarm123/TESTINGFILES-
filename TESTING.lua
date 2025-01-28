@@ -334,6 +334,106 @@ SettingsTab:CreateToggle({
     end
 })
 
+-- Flagi kontrolne dla farmienia
+local FarmStart = false -- Domyślnie farmienie wyłączone
+local TargetNames = { -- Lista nazw monet do farmienia
+    ["Christmas3 Cane"] = false,
+    ["Christmas3 Small Cane"] = false,
+    ["Christmas1 Sleigh"] = false
+}
+
+local PetTable = {} -- Lista aktywnych zwierzaków
+
+-- Funkcja aktualizująca listę zwierzaków
+local function UpdatePetTable()
+    local Stats = workspace["__REMOTES"]["Core"]["Get Other Stats"]:InvokeServer()
+    local PlayerStats = Stats[game.Players.LocalPlayer.Name]
+    local Pets = PlayerStats["Save"]["Pets"]
+
+    PetTable = {}
+    for _, pet in ipairs(Pets) do
+        if pet.e then -- Sprawdzanie, czy zwierzak jest aktywny
+            table.insert(PetTable, {
+                ID = tonumber(pet.id),
+                LEVEL = tonumber(pet.l)
+            })
+        end
+    end
+end
+
+-- Funkcja farmienia monet
+local function FarmCoin(Coin)
+    while FarmStart and Coin:FindFirstChild("CoinName") and TargetNames[Coin.CoinName.Value] do
+        for _, pet in ipairs(PetTable) do
+            workspace["__REMOTES"]["Game"]["Coins"]:FireServer("Mine", Coin.Name, pet.LEVEL, pet.ID)
+        end
+        task.wait()
+
+        -- Zabezpieczenie przed usunięciem monety
+        if not Coin:IsDescendantOf(workspace["__THINGS"].Coins) then
+            break
+        end
+    end
+end
+
+-- Pętla farmienia
+task.spawn(function()
+    while true do
+        if FarmStart then
+            UpdatePetTable() -- Aktualizacja listy zwierzaków
+            for _, Coin in ipairs(workspace["__THINGS"].Coins:GetChildren()) do
+                if Coin:FindFirstChild("CoinName") and TargetNames[Coin.CoinName.Value] then
+                    FarmCoin(Coin)
+                end
+            end
+        end
+        task.wait(1) -- Krótkie opóźnienie między cyklami
+    end
+end)
+
+-- Dodanie zakładki Farming w GUI Rayfield
+local FarmingTab = Window:CreateTab("Farming", 4483362458) -- Tworzenie zakładki
+
+local FarmingSection = FarmingTab:CreateSection("Farm Settings")
+
+-- Przełącznik włączający/wyłączający farmienie
+FarmingTab:CreateToggle({
+    Name = "Enable Auto Farm",
+    CurrentValue = FarmStart,
+    Flag = "EnableAutoFarm",
+    Callback = function(Value)
+        FarmStart = Value
+    end
+})
+
+-- Przełączniki dla wartości HP
+FarmingTab:CreateToggle({
+    Name = "Farm Christmas3 Cane",
+    CurrentValue = TargetNames["Christmas3 Cane"],
+    Flag = "FarmChristmas3Cane",
+    Callback = function(Value)
+        TargetNames["Christmas3 Cane"] = Value
+    end
+})
+
+FarmingTab:CreateToggle({
+    Name = "Farm Christmas3 Small Cane",
+    CurrentValue = TargetNames["Christmas3 Small Cane"],
+    Flag = "FarmChristmas3SmallCane",
+    Callback = function(Value)
+        TargetNames["Christmas3 Small Cane"] = Value
+    end
+})
+
+FarmingTab:CreateToggle({
+    Name = "Farm Christmas1 Sleigh",
+    CurrentValue = TargetNames["Christmas1 Sleigh"],
+    Flag = "FarmChristmas1Sleigh",
+    Callback = function(Value)
+        TargetNames["Christmas1 Sleigh"] = Value
+    end
+})
+
 -- Anti-AFK Script
 game:GetService("Players").LocalPlayer.Idled:Connect(function()
     local VirtualUser = game:service('VirtualUser')

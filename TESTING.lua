@@ -3,7 +3,7 @@ local RunService = game:GetService("RunService")
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
-   Name = "PET SIMULATOR SCRIPT!",
+   Name = "DELETING FESTIVE IMMORTUOS!",
    LoadingTitle = "Auto Hatch",
    LoadingSubtitle = "by Dark",
    ConfigurationSaving = {
@@ -48,14 +48,198 @@ end
 local Deleters = {
     "Dominus Pumpkin", "Dominus Cherry", "Dominus Noob", "Dominus Wavy", 
     "Dominus Damnee", "Dominus HeadStack", "Spike", "Aesthetic Cat", "Magic Fox", 
-    "Chimera", "Gingerbread", "Festive Ame Damnee", "Reindeer", "Festive Dominus", 
+    "Chimera", "Gingerbread", "Festive Ame Damnee", "Reindeer", "Festive Dominus"
 }
 
 -- Zakładka Auto Egg
-local EggTab = Window:CreateTab("Auto Egg", 4483362458)
+local EggTab = Window:CreateTab("🐣Auto Egg", 4483362458)
 
--- Zakładka Auto Combine
-local SettingsTab = Window:CreateTab("Settings", 4483362458)
+-- Zakładka Settings 
+local SettingsTab = Window:CreateTab("⚙️Settings", 4483362458)
+
+-- Zakładka Farming 
+local FarmingTab = Window:CreateTab("🌱Farming", 4483362458)
+
+-- Zakładka Themes
+local ThemesTab = Window:CreateTab("🦋Themes", 4483362458)
+
+local Button = ThemesTab:CreateButton({
+   Name = "Default",
+   Callback = function()
+   Window.ModifyTheme('Default')
+   end,
+})
+
+local Button = ThemesTab:CreateButton({
+   Name = "Ocean",
+   Callback = function()
+   Window.ModifyTheme('Ocean')
+   end,
+})
+
+local Button = ThemesTab:CreateButton({
+   Name = "Dark Blue",
+   Callback = function()
+   Window.ModifyTheme('DarkBlue')
+   end,
+})
+
+local Button = ThemesTab:CreateButton({
+   Name = "Green",
+   Callback = function()
+   Window.ModifyTheme('Green')
+   end,
+})
+
+local Button = ThemesTab:CreateButton({
+   Name = "Bloom",
+   Callback = function()
+   Window.ModifyTheme('Bloom')
+   end,
+})
+
+local Button = ThemesTab:CreateButton({
+   Name = "Light",
+   Callback = function()
+   Window.ModifyTheme('Light')
+   end,
+})
+
+local Button = ThemesTab:CreateButton({
+   Name = "Serenity",
+   Callback = function()
+   Window.ModifyTheme('Serenity')
+   end,
+})
+
+local Button = ThemesTab:CreateButton({
+   Name = "Amethyst",
+   Callback = function()
+   Window.ModifyTheme('Amethyst')
+   end,
+})
+
+local Button = ThemesTab:CreateButton({
+   Name = "Amber Glow",
+   Callback = function()
+   Window.ModifyTheme('AmberGlow')
+   end,
+})
+
+local get = false
+local Hat = 'Robux'
+local Hats = {
+    [40005] = {"Hat Stack",4},
+    [40006] = {"Blue Top Hat",4},
+    [40007] = {"Robux",5},
+    [30001] = {"Traffic Cone",3},
+    [30002] = {"Pirate Hat",3},
+    [30003] = {"Chessboard",3},
+    [30004] = {"Horns",3},
+    [30005] = {"Green Banded Top Hat",3},
+    [30006] = {"Yellow Banded Top Hat",3},
+    [30007] = {"White Top Hat",3},
+    [30008] = {"Blue Traffic Cone",3},
+    [99001] = {"Rain Cloud",5},
+    [99002] = {"Crown",5},
+    [20001] = {"Paper Hat",2},
+    [99004] = {"Lord of the Federation",5},
+    [99005] = {"Domino Crown",5},
+    [20004] = {"Propeller Beanie",2},
+    [20005] = {"Cowboy Hat",2},
+    [20006] = {"Viking",2},
+    [20007] = {"Giant Cheese",2},
+    [10001] = {"Lei",1},
+    [10002] = {"Apple",1},
+    [10003] = {"Black Winter Cap",1},
+    [10004] = {"Pot",1},
+    [99003] = {"Duke of the Federation",5},
+    [99006] = {"Black Iron Domino Crown",5},
+    [20002] = {"Cheese",2},
+    [40001] = {"Neon Pink Banded Top Hat",4},
+    [40002] = {"Rubber Duckie",4},
+    [40003] = {"Noob Sign",4},
+    [40004] = {"Bling Top Hat",4},
+    [20003] = {"Princess Hat",2},
+}
+
+local function AutoHatFarm()
+    local present, id
+    for i, v in pairs(Hats) do
+        if v[1] == Hat then
+            id = i
+            present = v[2] == 5 and 'Golden' or 'Tier ' .. v[2]
+        end
+    end
+
+    local r = workspace.__REMOTES
+    local mh = r.Core["Get Stats"]:InvokeServer().Save.HatSlots
+
+    while true do
+        if not get then coroutine.yield() end  -- Zatrzymuje działanie pętli, gdy toggle jest wyłączony
+
+        local td, wt = {}, 0
+        local tb = mh - #r.Core["Get Stats"]:InvokeServer().Save.Hats
+
+        for _ = 1, tb do
+            if not get then coroutine.yield() end
+            task.spawn(function()
+                if not get then return end
+                local _, h = r.Game.Shop:InvokeServer("Buy", "Presents", present)
+                if tonumber(h[1][1].n) ~= id then
+                    table.insert(td, h[1][1].id)
+                else
+                    warn("Got Robux hat")
+                end
+                wt = wt + 1
+            end)
+        end
+        repeat task.wait() until wt == tb or not get
+        if not get then coroutine.yield() end
+
+        r.Game.Hats:InvokeServer("MultiDelete", td)
+    end
+end
+
+-- Tworzenie coroutiny
+local hatFarmThread = coroutine.create(AutoHatFarm)
+
+-- **Dodanie przełącznika do Rayfield**
+local HatToggle = SettingsTab:CreateToggle({
+    Name = "Auto Hat Farm",
+    CurrentValue = false,
+    Flag = "AutoHatFarmToggle",
+    Callback = function(Value)
+        get = Value
+        if Value then
+            coroutine.resume(hatFarmThread) -- Wznawia coroutine, jeśli toggle włączony
+        end
+    end
+})
+
+local function NotifyDeletersList()
+-- Łączenie listy petów w jedną wiadomość
+local deletersList = table.concat(Deleters, ", ")
+       -- Wyświetlenie powiadomienia
+    Rayfield:Notify({
+        Title = "Deleted pets list",
+        Content = deletersList,
+        Duration = 10, -- Czas trwania powiadomienia (w sekundach)
+        Image = 4483362458, -- Opcjonalnie: zmień na ID obrazka, jeśli masz
+    })
+end
+
+local Section = SettingsTab:CreateSection("Deleters list")
+
+local Button = SettingsTab:CreateButton({
+   Name = "Deleted pets list",
+   Callback = function()
+   NotifyDeletersList()
+    -- Wywołanie funkcji, aby przetestować powiadomienie
+  end,
+})
+
+local Section = SettingsTab:CreateSection("Other")
 
 local Button = SettingsTab:CreateButton({
    Name = "Destroy UI",
@@ -89,29 +273,6 @@ local Button = SettingsTab:CreateButton({
    end,
 })
 
-local InfoTab = Window:CreateTab("Info", 4483362458)
-
-local function NotifyDeletersList()
-
--- Łączenie listy petów w jedną wiadomość
-local deletersList = table.concat(Deleters, ", ")
-       -- Wyświetlenie powiadomienia
-    Rayfield:Notify({
-        Title = "Deleted pets list",
-        Content = deletersList,
-        Duration = 10, -- Czas trwania powiadomienia (w sekundach)
-        Image = 4483362458, -- Opcjonalnie: zmień na ID obrazka, jeśli masz
-    })
-end
- 
-local Button = InfoTab:CreateButton({
-   Name = "Deleted pets list",
-   Callback = function()
-   NotifyDeletersList()
-    -- Wywołanie funkcji, aby przetestować powiadomienie
-  end,
-})
-
 local Directory = require(game:GetService("ReplicatedStorage")["1 | Directory"])
 
 -- Flagi kontrolne
@@ -131,19 +292,19 @@ end
 
 -- Funkcja usuwająca niechciane zwierzaki
 local function DeleteOtherUnwantedPets()
-if not AutoDeletersRunning then return end -- Jeśli flaga wyłączona, przerwij działanie funkcji
-    local Stats = workspace["__REMOTES"]["Core"]["Get Stats"]:InvokeServer()
-    for _, Pet in ipairs(Stats.Save.Pets) do
-    if not AutoDeletersRunning then break end -- Sprawdzenie flagi w każdej iteracji
-        if CheckDeleters(Pet.n) then
-            -- Usuwanie zwierzaka w tle z task.defer
-            task.defer(function()
-                workspace["__REMOTES"]["Game"]["Inventory"]:InvokeServer("Delete", Pet.id)
-            end)
+    if not AutoDeletersRunning then return end
+    coroutine.wrap(function()
+        local Stats = workspace["__REMOTES"]["Core"]["Get Stats"]:InvokeServer()
+        for _, Pet in ipairs(Stats.Save.Pets) do
+            if not AutoDeletersRunning then break end
+            if CheckDeleters(Pet.n) then
+                task.defer(function()
+                    workspace["__REMOTES"]["Game"]["Inventory"]:InvokeServer("Delete", Pet.id)
+                end)
+            end
         end
-    end
+    end)()
 end
-
 
 -- Funkcja zakupu jajek
 local function BuyEgg(tier)
@@ -160,107 +321,107 @@ end
 
 -- Główna funkcja Auto Egg
 local function AutoEggMain()
-    while true do
-        local selectedTier = nil
-        for i = 1, 4 do
-            if Settings["Auto Egg"]["Christmas Tier " .. i] then
-                selectedTier = "Christmas Tier " .. i
-                break
-            end
-        end
-        if not selectedTier then
-            for i = 1, 18 do
-                if Settings["Auto Egg"]["Tier " .. i] then
-                    selectedTier = "Tier " .. i
+    coroutine.wrap(function()
+        while true do
+            local selectedTier = nil
+            for i = 1, 4 do
+                if Settings["Auto Egg"]["Christmas Tier " .. i] then
+                    selectedTier = "Christmas Tier " .. i
                     break
                 end
             end
+            if not selectedTier then
+                for i = 1, 18 do
+                    if Settings["Auto Egg"]["Tier " .. i] then
+                        selectedTier = "Tier " .. i
+                        break
+                    end
+                end
+            end
+
+            if not selectedTier then break end
+
+            -- Sprawdzanie miejsca w ekwipunku
+            local stats = workspace["__REMOTES"]["Core"]["Get Stats"]:InvokeServer()
+            local currentPets = #stats.Save.Pets
+            local maxPets = stats.Save.PetSlots
+            local requiredFreeSlots = Settings["Auto Egg"]["Triple Egg Open"] and 3 or 1
+
+            if maxPets - currentPets < requiredFreeSlots then
+                repeat
+                    task.wait()
+                    stats = workspace["__REMOTES"]["Core"]["Get Stats"]:InvokeServer()
+                    currentPets = #stats.Save.Pets
+                until maxPets - currentPets >= requiredFreeSlots
+            end
+
+            -- Zakup jajka
+            local success = BuyEgg(selectedTier)
+            if not success then break end
+            task.wait()
         end
-
-        if not selectedTier then break end
-
-        -- Sprawdzanie miejsca w ekwipunku
-        local stats = workspace["__REMOTES"]["Core"]["Get Stats"]:InvokeServer()
-        local currentPets = #stats.Save.Pets
-        local maxPets = stats.Save.PetSlots
-        local requiredFreeSlots = Settings["Auto Egg"]["Triple Egg Open"] and 3 or 1
-
-        if maxPets - currentPets < requiredFreeSlots then
-            warn("Ekwipunek pełny, czekam na zwolnienie miejsca...")
-            repeat
-        task.wait()
-                stats = workspace["__REMOTES"]["Core"]["Get Stats"]:InvokeServer()
-                currentPets = #stats.Save.Pets
-            until maxPets - currentPets >= requiredFreeSlots
-            warn("Miejsce w ekwipunku dostępne, wznawiam Auto Hatch.")
-        end
-
-        -- Zakup jajka
-        local success = BuyEgg(selectedTier)
-        if not success then
-            warn("Kupowanie jajek zostało przerwane.")
-            break
-        end
-        task.wait()
-    end
+    end)()
 end
 
 -- Funkcja automatycznego łączenia zwierzaków
 local function AutoCombineCheck()
-if not AutoCombineRunning then return end -- Jeśli flaga wyłączona, przerwij działanie funkcji
-    local Stats = workspace["__REMOTES"]["Core"]["Get Stats"]:InvokeServer()
-    local GoldTable, RainbowTable, DarkMatterTable = {}, {}, {}
+    if not AutoCombineRunning then return end
+    coroutine.wrap(function()
+        local Stats = workspace["__REMOTES"]["Core"]["Get Stats"]:InvokeServer()
+        local GoldTable, RainbowTable, DarkMatterTable = {}, {}, {}
 
-    -- Tworzenie tabel z odpowiednimi zwierzakami
-    for _, Pet in ipairs(Stats.Save.Pets) do
-    if not AutoCombineRunning then break end -- Sprawdzenie flagi w każdej iteracji
-        if Settings["Auto Combine"]["Gold"] and not Pet.g and not Pet.r and not Pet.dm then
-            GoldTable[tostring(Pet.n)] = (GoldTable[tostring(Pet.n)] or 0) + 1
-        elseif Settings["Auto Combine"]["Rainbow"] and Pet.g and not Pet.r and not Pet.dm then
-            RainbowTable[tostring(Pet.n)] = (RainbowTable[tostring(Pet.n)] or 0) + 1
-        elseif Settings["Auto Combine"]["Dark Matter"] and not Pet.g and Pet.r and not Pet.dm then
-            DarkMatterTable[tostring(Pet.n)] = (DarkMatterTable[tostring(Pet.n)] or 0) + 1
-        end
-    end
-
-    -- Łączenie w Gold
-    for PetN, Amount in pairs(GoldTable) do
-        if Amount >= 10 then
-            task.defer(function()  -- Użycie task.defer do wykonania w tle
-                for _, Pet in ipairs(Stats.Save.Pets) do
-                    if tostring(Pet.n) == tostring(PetN) and not Pet.g and not Pet.r and not Pet.dm then
-                        workspace["__REMOTES"]["Game"]["Golden Pets"]:InvokeServer(Pet.id)
-                    end
+        for _, Pet in ipairs(Stats.Save.Pets) do
+            if not AutoCombineRunning then break end
+            if tostring(Pet.n) ~= "BIG Maskot" then
+                if Settings["Auto Combine"]["Gold"] and not Pet.g and not Pet.r and not Pet.dm then
+                    GoldTable[tostring(Pet.n)] = (GoldTable[tostring(Pet.n)] or 0) + 1
+                elseif Settings["Auto Combine"]["Rainbow"] and Pet.g and not Pet.r and not Pet.dm then
+                    RainbowTable[tostring(Pet.n)] = (RainbowTable[tostring(Pet.n)] or 0) + 1
+                elseif Settings["Auto Combine"]["Dark Matter"] and not Pet.g and Pet.r and not Pet.dm then
+                    DarkMatterTable[tostring(Pet.n)] = (DarkMatterTable[tostring(Pet.n)] or 0) + 1
                 end
-            end)
+            end
         end
-    end
 
-    -- Łączenie w Rainbow
-    for PetN, Amount in pairs(RainbowTable) do
-        if Amount >= 7 then
-            task.defer(function()  -- Użycie task.defer do wykonania w tle
-                for _, Pet in ipairs(Stats.Save.Pets) do
-                    if tostring(Pet.n) == tostring(PetN) and Pet.g and not Pet.r and not Pet.dm then
-                        workspace["__REMOTES"]["Game"]["Rainbow Pets"]:InvokeServer(Pet.id)
+        -- Łączenie w Gold
+        for PetN, Amount in pairs(GoldTable) do
+            if Amount >= 10 then
+                coroutine.wrap(function()
+                    for _, Pet in ipairs(Stats.Save.Pets) do
+                        if tostring(Pet.n) == tostring(PetN) and not Pet.g and not Pet.r and not Pet.dm then
+                            workspace["__REMOTES"]["Game"]["Golden Pets"]:InvokeServer(Pet.id)
+                        end
                     end
-                end
-            end)
+                end)()
+            end
         end
-    end
 
-    -- Łączenie w Dark Matter
-    for PetN, Amount in pairs(DarkMatterTable) do
-        if Amount >= 5 then
-            task.defer(function()  -- Użycie task.defer do wykonania w tle
-                for _, Pet in ipairs(Stats.Save.Pets) do
-                    if tostring(Pet.n) == tostring(PetN) and not Pet.g and Pet.r and not Pet.dm then
-                        workspace["__REMOTES"]["Game"]["Dark Matter Pets"]:InvokeServer(Pet.id)
+        -- Łączenie w Rainbow
+        for PetN, Amount in pairs(RainbowTable) do
+            if Amount >= 7 then
+                coroutine.wrap(function()
+                    for _, Pet in ipairs(Stats.Save.Pets) do
+                        if tostring(Pet.n) == tostring(PetN) and Pet.g and not Pet.r and not Pet.dm then
+                            workspace["__REMOTES"]["Game"]["Rainbow Pets"]:InvokeServer(Pet.id)
+                        end
                     end
-                end
-            end)
+                end)()
+            end
         end
-    end
+
+        -- Łączenie w Dark Matter
+        for PetN, Amount in pairs(DarkMatterTable) do
+            if Amount >= 5 then
+                coroutine.wrap(function()
+                    for _, Pet in ipairs(Stats.Save.Pets) do
+                        if tostring(Pet.n) == tostring(PetN) and not Pet.g and Pet.r and not Pet.dm then
+                            workspace["__REMOTES"]["Game"]["Dark Matter Pets"]:InvokeServer(Pet.id)
+                        end
+                    end
+                end)()
+            end
+        end
+    end)()
 end
 
 local function AddTierToggles(tab, sectionName, prefix, rangeStart, rangeEnd)
@@ -290,6 +451,8 @@ AddTierToggles(EggTab, "Christmas Tier", "Christmas Tier", 4, 1)
 
 -- Dodanie przełączników dla Tier 18–1 (malejąca kolejność)
 AddTierToggles(EggTab, "Tier", "Tier", 18, 1)
+
+local Section = SettingsTab:CreateSection("Hatching")
 
 SettingsTab:CreateToggle({
     Name = "Triple Egg Open (gamepass required)",
@@ -390,9 +553,6 @@ task.spawn(function()
         task.wait(1) -- Krótkie opóźnienie między cyklami
     end
 end)
-
--- Dodanie zakładki Farming w GUI Rayfield
-local FarmingTab = Window:CreateTab("Farming", 4483362458) -- Tworzenie zakładki
 
 local FarmingSection = FarmingTab:CreateSection("Farm Settings")
 

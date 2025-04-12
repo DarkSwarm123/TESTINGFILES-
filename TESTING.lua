@@ -9,7 +9,7 @@ local Window = Rayfield:CreateWindow({
    ConfigurationSaving = {
       Enabled = true,
       FolderName = "RayfieldGUIconfig",
-      FileName = "TESTING"
+      FileName = "Pet Simulator 1"
    },
    Discord = {
       Enabled = false,

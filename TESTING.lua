@@ -3,8 +3,8 @@ local RunService = game:GetService("RunService")
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
-   Name = "Pet Simulator Script",
-   LoadingTitle = "Auto Hatch",
+   Name = "Pet Simulator 1 Script",
+   LoadingTitle = "Loading...",
    LoadingSubtitle = "by Dark",
    ConfigurationSaving = {
       Enabled = true,

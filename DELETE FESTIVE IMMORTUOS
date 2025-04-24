@@ -225,7 +225,7 @@ local deletersList = table.concat(Deleters, ", ")
         Title = "Deleted pets list",
         Content = deletersList,
         Duration = 10, -- Czas trwania powiadomienia (w sekundach)
-        Image = 4483362458, -- Opcjonalnie: zmień na ID obrazka, jeśli masz
+        Image = 2540372588, -- Opcjonalnie: zmień na ID obrazka, jeśli masz
     })
 end
 

@@ -52,7 +52,7 @@ local Deleters = {
 }
 
 -- Zakładka Auto Egg
-local EggTab = Window:CreateTab("🐣Auto Egg", 4483362458)
+local EggTab = Window:CreateTab("Auto Egg", 4921542345)
 
 -- Zakładka Settings 
 local SettingsTab = Window:CreateTab("⚙️Settings", 4483362458)

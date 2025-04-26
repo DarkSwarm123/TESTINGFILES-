@@ -163,6 +163,12 @@ local Hats = {
     [20003] = {"Princess Hat",2},
 }
 
+local function Wait(x)
+    for i = 1, x do
+        task.wait()
+    end
+end
+
 local function AutoHatFarm()
     local present, id
     for i, v in pairs(Hats) do
@@ -358,7 +364,7 @@ local function AutoEggMain()
             -- Zakup jajka
             local success = BuyEgg(selectedTier)
             if not success then break end
-            task.wait()
+            Wait(4)
         end
     end)()
 end

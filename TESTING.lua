@@ -200,7 +200,7 @@ local function AutoHatFarm()
                 wt = wt + 1
             end)
         end
-        repeat task.wait() until wt == tb or not get
+        repeat Wait(2) until wt == tb or not get
         if not get then coroutine.yield() end
 
         r.Game.Hats:InvokeServer("MultiDelete", td)

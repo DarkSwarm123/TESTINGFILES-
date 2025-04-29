@@ -147,7 +147,7 @@ local function setRendering(state)
 end
 
 -- Rayfield Toggle
-SettingsTab:CreateToggle({
+local Tab = SettingsTab:CreateToggle({
     Name = "No Rendering",
     CurrentValue = false,
     Callback = function(Value)
@@ -176,7 +176,7 @@ local function restoreRemoteEvents()
     end
 end
 
-SettingsTab:CreateToggle({
+local Tab = SettingsTab:CreateToggle({
     Name = "Disable Client Updater",
     CurrentValue = false,
     Flag = "ToggleRemote",

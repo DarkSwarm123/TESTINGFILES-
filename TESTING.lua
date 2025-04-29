@@ -167,7 +167,7 @@ local function restoreRemoteEvents()
 end
 
 SettingsTab:CreateToggle({
-    Name = "Zniszcz Laggy RemoteEvent",
+    Name = "Destroy Client Updater",
     CurrentValue = false,
     Flag = "DestroyRemote",  -- Flaga do sprawdzania stanu przełącznika
     Callback = function(Value)
@@ -269,19 +269,6 @@ end
 -- Tworzenie coroutiny
 local hatFarmThread = coroutine.create(AutoHatFarm)
 
--- **Dodanie przełącznika do Rayfield**
-local HatToggle = SettingsTab:CreateToggle({
-    Name = "Auto Hat Farm",
-    CurrentValue = false,
-    Flag = "AutoHatFarmToggle",
-    Callback = function(Value)
-        get = Value
-        if Value then
-            coroutine.resume(hatFarmThread) -- Wznawia coroutine, jeśli toggle włączony
-        end
-    end
-})
-
 local function NotifyDeletersList()
 -- Łączenie listy petów w jedną wiadomość
 local deletersList = table.concat(Deleters, ", ")
@@ -295,6 +282,20 @@ local deletersList = table.concat(Deleters, ", ")
 end
 
 local Section = SettingsTab:CreateSection("Other")
+
+-- **Dodanie przełącznika do Rayfield**
+local HatToggle = SettingsTab:CreateToggle({
+    Name = "Auto Hat Farm",
+    CurrentValue = false,
+    Flag = "AutoHatFarmToggle",
+    Callback = function(Value)
+        get = Value
+        if Value then
+            coroutine.resume(hatFarmThread) -- Wznawia coroutine, jeśli toggle włączony
+        end
+    end
+})
+
 
 local Button = SettingsTab:CreateButton({
    Name = "Deleted pets list",

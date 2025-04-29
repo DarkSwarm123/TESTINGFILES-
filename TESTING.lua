@@ -155,6 +155,36 @@ SettingsTab:CreateToggle({
     end,
 })
 
+local originalRemoteEvents = {}
+
+local function restoreRemoteEvents()
+    for _, event in pairs(originalRemoteEvents) do
+        if not game.Players.LocalPlayer.PlayerGui.Events:FindFirstChild(event.Name) then
+            local clone = event:Clone()
+            clone.Parent = game.Players.LocalPlayer.PlayerGui.Events
+        end
+    end
+end
+
+Tab:CreateToggle({
+    Name = "Zniszcz Laggy RemoteEvent",
+    CurrentValue = false,
+    Flag = "DestroyRemote",  -- Flaga do sprawdzania stanu przełącznika
+    Callback = function(Value)
+        if Value then  -- Jeśli Toggle jest włączony
+            -- Przechowujemy oryginalne RemoteEvent w zmiennej
+            for _, LaggyRemoteEvent in pairs(game.Players.LocalPlayer.PlayerGui.Events:GetChildren()) do
+                table.insert(originalRemoteEvents, LaggyRemoteEvent)  -- Dodajemy zdarzenia do listy
+                LaggyRemoteEvent:Destroy()  -- Usuwamy RemoteEvents
+            end
+            print("RemoteEvents zostały usunięte.")
+        else  -- Jeśli Toggle jest wyłączony
+            restoreRemoteEvents()  -- Przywracamy usunięte zdarzenia
+            print("RemoteEvents zostały przywrócone.")
+        end
+    end
+})
+
 local get = false
 local Hat = 'Robux'
 local Hats = {

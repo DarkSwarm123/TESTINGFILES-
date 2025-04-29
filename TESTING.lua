@@ -126,6 +126,35 @@ local Button = ThemesTab:CreateButton({
    end,
 })
 
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "RenderToggleGui"
+screenGui.ResetOnSpawn = false
+screenGui.IgnoreGuiInset = true
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+local background = Instance.new("Frame")
+background.Size = UDim2.new(1, 0, 1, 0)
+background.Position = UDim2.new(0, 0, 0, 0)
+background.BackgroundColor3 = Color3.new(0, 0, 0)
+background.ZIndex = 10
+background.Visible = false
+background.Parent = screenGui
+
+-- Funkcja ustawiająca render + nakładkę
+local function setRendering(state)
+    game:GetService("RunService"):Set3dRenderingEnabled(state)
+    background.Visible = not state
+end
+
+-- Rayfield Toggle
+SettingsTab:CreateToggle({
+    Name = "No Rendering",
+    CurrentValue = false,
+    Callback = function(Value)
+        setRendering(not Value)
+    end,
+})
+
 local get = false
 local Hat = 'Robux'
 local Hats = {

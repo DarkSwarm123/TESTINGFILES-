@@ -264,7 +264,7 @@ local deletersList = table.concat(Deleters, ", ")
     })
 end
 
-local Section = SettingsTab:CreateSection("Deleters list")
+local Section = SettingsTab:CreateSection("Other")
 
 local Button = SettingsTab:CreateButton({
    Name = "Deleted pets list",
@@ -274,7 +274,6 @@ local Button = SettingsTab:CreateButton({
   end,
 })
 
-local Section = SettingsTab:CreateSection("Other")
 
 local Button = SettingsTab:CreateButton({
    Name = "Destroy UI",

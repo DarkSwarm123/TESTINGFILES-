@@ -166,7 +166,7 @@ local function restoreRemoteEvents()
     end
 end
 
-Tab:CreateToggle({
+SettingsTab:CreateToggle({
     Name = "Zniszcz Laggy RemoteEvent",
     CurrentValue = false,
     Flag = "DestroyRemote",  -- Flaga do sprawdzania stanu przełącznika

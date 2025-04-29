@@ -155,38 +155,16 @@ local Tab = SettingsTab:CreateToggle({
     end,
 })
 
-local blockedRemoteEvents = {}
-
-local function blockRemoteEvents()
-    -- Blokujemy wszystkie RemoteEvents w PlayerGui
-    for _, event in pairs(game.Players.LocalPlayer.PlayerGui.Events:GetChildren()) do
-        if event:IsA("RemoteEvent") then
-            -- Tworzymy pusty funkcjonujący handler, który nic nie robi, żeby zablokować eventy
-            blockedRemoteEvents[event] = event.OnClientEvent
-            event.OnClientEvent = function() end  -- Przypisujemy pustą funkcję
+local Button = SettingsTab:CreateButton({
+    Name = "Destroy Client Updater",
+    Callback = function()
+        -- Zniszczenie wszystkich RemoteEventów
+        for _, LaggyRemoteEvent in pairs(game.Players.LocalPlayer.PlayerGui.Events:GetChildren()) do
+            if LaggyRemoteEvent:IsA("RemoteEvent") then
+                LaggyRemoteEvent:Destroy()
+            end
         end
-    end
-end
-
-local function restoreRemoteEvents()
-    -- Przywracamy pierwotne eventy
-    for event, originalHandler in pairs(blockedRemoteEvents) do
-        event.OnClientEvent = originalHandler  -- Przywracamy oryginalnego handlera
-    end
-end
-
-local Tab = SettingsTab:CreateToggle({
-    Name = "Block RemoteEvents",
-    CurrentValue = false,
-    Flag = "ToggleBlockRemote",
-    Callback = function(Value)
-        if Value then
-            blockRemoteEvents()
-            print("RemoteEvents zostały zablokowane.")
-        else
-            restoreRemoteEvents()
-            print("RemoteEvents zostały przywrócone.")
-        end
+        print("Wszystkie RemoteEventy zostały zniszczone.")
     end
 })
 

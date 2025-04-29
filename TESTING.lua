@@ -176,8 +176,8 @@ local function restoreRemoteEvents()
     end
 end
 
-Tab:CreateToggle({
-    Name = "Toggle RemoteEvents",
+SettingsTab:CreateToggle({
+    Name = "Disable Client Updater",
     CurrentValue = false,
     Flag = "ToggleRemote",
     Callback = function(Value)

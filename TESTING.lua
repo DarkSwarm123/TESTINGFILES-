@@ -158,13 +158,9 @@ local Tab = SettingsTab:CreateToggle({
 local Button = SettingsTab:CreateButton({
     Name = "Destroy Client Updater",
     Callback = function()
-        -- Zniszczenie wszystkich RemoteEventów
         for _, LaggyRemoteEvent in pairs(game.Players.LocalPlayer.PlayerGui.Events:GetChildren()) do
-            if LaggyRemoteEvent:IsA("RemoteEvent") then
-                LaggyRemoteEvent:Destroy()
-            end
+            LaggyRemoteEvent:Destroy()
         end
-        print("Wszystkie RemoteEventy zostały zniszczone.")
     end
 })
 

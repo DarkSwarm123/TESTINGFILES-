@@ -155,32 +155,38 @@ SettingsTab:CreateToggle({
     end,
 })
 
-local originalRemoteEvents = {}
+local RemoteEventsStatus = {}
 
-local function restoreRemoteEvents()
-    for _, event in pairs(originalRemoteEvents) do
-        if not game.Players.LocalPlayer.PlayerGui.Events:FindFirstChild(event.Name) then
-            local clone = event:Clone()
-            clone.Parent = game.Players.LocalPlayer.PlayerGui.Events
+local function disableRemoteEvents()
+    for _, event in pairs(game.Players.LocalPlayer.PlayerGui.Events:GetChildren()) do
+        if event:IsA("RemoteEvent") then
+            -- Zapisz stan eventu przed jego wyłączeniem
+            RemoteEventsStatus[event.Name] = event.Enabled
+            event.Enabled = false
         end
     end
 end
 
-SettingsTab:CreateToggle({
-    Name = "Destroy Client Updater",
+local function restoreRemoteEvents()
+    for _, event in pairs(game.Players.LocalPlayer.PlayerGui.Events:GetChildren()) do
+        if event:IsA("RemoteEvent") and RemoteEventsStatus[event.Name] ~= nil then
+            -- Przywróć stan eventu
+            event.Enabled = RemoteEventsStatus[event.Name]
+        end
+    end
+end
+
+Tab:CreateToggle({
+    Name = "Toggle RemoteEvents",
     CurrentValue = false,
-    Flag = "DestroyRemote",  -- Flaga do sprawdzania stanu przełącznika
+    Flag = "ToggleRemote",
     Callback = function(Value)
-        if Value then  -- Jeśli Toggle jest włączony
-            -- Przechowujemy oryginalne RemoteEvent w zmiennej
-            for _, LaggyRemoteEvent in pairs(game.Players.LocalPlayer.PlayerGui.Events:GetChildren()) do
-                table.insert(originalRemoteEvents, LaggyRemoteEvent)  -- Dodajemy zdarzenia do listy
-                LaggyRemoteEvent:Destroy()  -- Usuwamy RemoteEvents
-            end
-            print("RemoteEvents zostały usunięte.")
-        else  -- Jeśli Toggle jest wyłączony
-            restoreRemoteEvents()  -- Przywracamy usunięte zdarzenia
-            print("RemoteEvents zostały przywrócone.")
+        if Value then
+            disableRemoteEvents()
+            print("RemoteEvents wyłączone.")
+        else
+            restoreRemoteEvents()
+            print("RemoteEvents przywrócone.")
         end
     end
 })

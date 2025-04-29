@@ -155,62 +155,37 @@ local Tab = SettingsTab:CreateToggle({
     end,
 })
 
-local BlockedEvents = {}
-local BlockedConnections = {}
+local blockedRemoteEvents = {}
 
-local function blockSelectedRemoteEvents()
-    local folder = game.Players.LocalPlayer:WaitForChild("PlayerGui"):FindFirstChild("Events")
-    if not folder then return end
-
-    for _, v in pairs(folder:GetChildren()) do
-        if v:IsA("RemoteEvent") then
-            -- Zablokuj FireServer
-            if not BlockedEvents[v] then
-                local originalFireServer = v.FireServer
-                BlockedEvents[v] = originalFireServer
-                v.FireServer = function() return end
-            end
-
-            -- Zablokuj OnClientEvent connections
-            local connections = getconnections(v.OnClientEvent)
-            for _, conn in ipairs(connections) do
-                if conn.Enabled then
-                    conn:Disable()
-                    table.insert(BlockedConnections, conn)
-                end
-            end
+local function blockRemoteEvents()
+    -- Blokujemy wszystkie RemoteEvents w PlayerGui
+    for _, event in pairs(game.Players.LocalPlayer.PlayerGui.Events:GetChildren()) do
+        if event:IsA("RemoteEvent") then
+            -- Tworzymy pusty funkcjonujący handler, który nic nie robi, żeby zablokować eventy
+            blockedRemoteEvents[event] = event.OnClientEvent
+            event.OnClientEvent = function() end  -- Przypisujemy pustą funkcję
         end
     end
 end
 
-local function unblockSelectedRemoteEvents()
-    for remote, original in pairs(BlockedEvents) do
-        if remote and original then
-            remote.FireServer = original
-        end
+local function restoreRemoteEvents()
+    -- Przywracamy pierwotne eventy
+    for event, originalHandler in pairs(blockedRemoteEvents) do
+        event.OnClientEvent = originalHandler  -- Przywracamy oryginalnego handlera
     end
-    BlockedEvents = {}
-
-    for _, conn in ipairs(BlockedConnections) do
-        if conn and not conn.Enabled then
-            conn:Enable()
-        end
-    end
-    BlockedConnections = {}
 end
 
--- Przypisanie Tab do SettingsTab z Rayfield
 local Tab = SettingsTab:CreateToggle({
-    Name = "Block PlayerGui.Events RemoteEvents",
+    Name = "Block RemoteEvents",
     CurrentValue = false,
-    Flag = "BlockGuiRemotes",
-    Callback = function(state)
-        if state then
-            blockSelectedRemoteEvents()
-            print("Wybrane RemoteEventy zablokowane.")
+    Flag = "ToggleBlockRemote",
+    Callback = function(Value)
+        if Value then
+            blockRemoteEvents()
+            print("RemoteEvents zostały zablokowane.")
         else
-            unblockSelectedRemoteEvents()
-            print("Wybrane RemoteEventy odblokowane.")
+            restoreRemoteEvents()
+            print("RemoteEvents zostały przywrócone.")
         end
     end
 })

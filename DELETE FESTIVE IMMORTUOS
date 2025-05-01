@@ -126,40 +126,29 @@ local Button = ThemesTab:CreateButton({
    end,
 })
 
-local OriginalBindableEvents = {}
+local blockedConnections = {}
 
 local Toggle = SettingsTab:CreateToggle({
-    Name = "Fake-Disable BindableEvents",
+    Name = "Block BindableEvents",
     CurrentValue = false,
-    Flag = "DisableBindableEvents",
+    Flag = "BlockBindableEvents",
     Callback = function(Value)
-        local EventsFolder = game.Players.LocalPlayer.PlayerGui:FindFirstChild("Events")
-        if not EventsFolder then return end
-
         if Value then
-            -- Zamień BindableEventy na "fałszywe"
-            for _, obj in pairs(EventsFolder:GetChildren()) do
-                if obj:IsA("BindableEvent") then
-                    -- Zapisz oryginał
-                    OriginalBindableEvents[obj.Name] = obj:Clone()
-                    -- Usuń oryginał
-                    obj:Destroy()
-                    -- Dodaj fałszywy zamiennik
-                    local fake = Instance.new("BindableEvent")
-                    fake.Name = obj.Name
-                    fake.Parent = EventsFolder
+            print("Blokowanie BindableEventów...")
+
+            for _, event in pairs(game.Players.LocalPlayer.PlayerGui.Events:GetChildren()) do
+                if event:IsA("BindableEvent") then
+                    local conn = event.Event:Connect(function() end)
+                    table.insert(blockedConnections, conn)
                 end
             end
-            print("BindableEventy wyłączone.")
         else
-            -- Przywróć oryginalne BindableEventy
-            for name, original in pairs(OriginalBindableEvents) do
-                local current = EventsFolder:FindFirstChild(name)
-                if current then current:Destroy() end
-                original.Parent = EventsFolder
+            print("Odblokowywanie BindableEventów...")
+
+            for _, conn in pairs(blockedConnections) do
+                conn:Disconnect()
             end
-            OriginalBindableEvents = {}
-            print("BindableEventy przywrócone.")
+            table.clear(blockedConnections)
         end
     end
 })

@@ -126,33 +126,6 @@ local Button = ThemesTab:CreateButton({
    end,
 })
 
-local blockedConnections = {}
-
-local Toggle = SettingsTab:CreateToggle({
-    Name = "Block BindableEvents",
-    CurrentValue = false,
-    Flag = "BlockBindableEvents",
-    Callback = function(Value)
-        if Value then
-            print("Blokowanie BindableEventów...")
-
-            for _, event in pairs(game.Players.LocalPlayer.PlayerGui.Events:GetChildren()) do
-                if event:IsA("BindableEvent") then
-                    local conn = event.Event:Connect(function() end)
-                    table.insert(blockedConnections, conn)
-                end
-            end
-        else
-            print("Odblokowywanie BindableEventów...")
-
-            for _, conn in pairs(blockedConnections) do
-                conn:Disconnect()
-            end
-            table.clear(blockedConnections)
-        end
-    end
-})
-
 local get = false
 local Hat = 'Robux'
 local Hats = {
